@@ -25,17 +25,23 @@ def save_results(data: dict[str, Any]) -> None:
     with open(PROM_FILE, "w") as outfh:
         outfh.write(f"# {data['timestamp']}\n")
         save_result(outfh, "Packetloss", "packetloss", data["packetLoss"])
-        save_result(outfh, "Upload IQM", "upload_iqm", data["upload"]["latency"]["iqm"])
-        save_result(outfh, "Upload bandwidth Mb", "upload_bandwidth", data["upload"]["bandwidth"]*8)
-        save_result(outfh, "Upload elapsed ms", "upload_elapsed", data["upload"]["elapsed"])
-        save_result(outfh, "Upload Speed Kbps", "upload_speed", data["upload"]["bandwidth"]*8/data["upload"]["elapsed"])
-        save_result(outfh, "Download IQM", "download_iqm", data["download"]["latency"]["iqm"])
-        save_result(outfh, "Download bandwidth Mb", "download_bandwidth", data["download"]["bandwidth"]*8)
-        save_result(outfh, "Download elapsed ms", "download_elapsed", data["download"]["elapsed"])
-        save_result(outfh, "Download Speed Kbps", "download_speed", data["download"]["bandwidth"]*8/data["download"]["elapsed"])
-        save_result(outfh, "Ping latency", "ping_latency", data["ping"]["latency"])
-        save_result(outfh, "Ping low", "ping_low", data["ping"]["low"])
-        save_result(outfh, "Ping high", "ping_high", data["ping"]["high"])
+
+        d = data["upload"]
+        save_result(outfh, "Upload latency", "speedtest_upload_latency", d["latency"]["iqm"])
+        save_result(outfh, "Upload bandwidth bps", "speedtest_upload_bandwidth", d["bandwidth"])
+        save_result(outfh, "Upload bytes", "speedtest_upload_bytes", d["bytes"])
+        save_result(outfh, "Upload elapsed ms", "speedtest_upload_elapsed", d["elapsed"])
+
+        d = data["download"]
+        save_result(outfh, "Download latency", "speedtest_download_latency", d["latency"]["iqm"])
+        save_result(outfh, "Download bandwidth bps", "speedtest_download_bandwidth", d["bandwidth"])
+        save_result(outfh, "Download bytes", "speedtest_download_bytes", d["bytes"])
+        save_result(outfh, "Download elapsed ms", "speedtest_download_elapsed", d["elapsed"])
+
+        d = data["ping"]
+        save_result(outfh, "Ping latency", "speedtest_ping_latency", d["latency"])
+        save_result(outfh, "Ping low", "speedtest_ping_low", d["low"])
+        save_result(outfh, "Ping high", "speedtest_ping_high", d["high"])
         
 
 ##############################################################################
