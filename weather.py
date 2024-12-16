@@ -27,7 +27,7 @@ def get_url() -> str:
         print("Need to specify WEATHER_LOCATION", file=sys.stderr)
         sys.exit(1)
 
-    url = f"https://api.weatherapi.com/v1/current.json"
+    url = "https://api.weatherapi.com/v1/current.json"
     url += f"?key={weather_api_key}"
     url += f"&q={weather_location}"
     url += "&aqi=yes"
@@ -58,7 +58,7 @@ def save_results(data: dict[str, Any]):
     current = data["current"]
     aqi = data["current"]["air_quality"]
     with open(PROM_FILE, "w", encoding="utf-8") as outfh:
-        outfh.write(f"# Collected from API {data['location']['localtime']}\n")
+        outfh.write(f"# Collected from API at {data['location']['localtime']}\n")
         outfh.write(f"# Data from {current['last_updated']}\n")
         save_result(outfh, "Current Temp in degrees c", "temp", current['temp_c'])
         save_result(outfh, "Wind Speed kph", "wind_speed", current['wind_kph'])
@@ -69,7 +69,7 @@ def save_results(data: dict[str, Any]):
         save_result(outfh, "Humidity", "humidity", current['humidity'])
         save_result(outfh, "Carbon Monoxide ug/m3", "aqi_co", aqi['co'])
         save_result(outfh, "Nitrogen Dioxide ug/m3", "aqi_no", aqi['no2'])
-        save_result(outfh, "Ozon ug/m3", "aqi_o3", aqi['o3'])
+        save_result(outfh, "Ozone ug/m3", "aqi_o3", aqi['o3'])
         save_result(outfh, "Sulfur Dioxide ug/m3", "aqi_so2", aqi['so2'])
         save_result(outfh, "PM 2.5ug/m3", "aqi_pm2_5", aqi['pm2_5'])
         save_result(outfh, "PM 10 ug/m3", "aqi_pm10", aqi['pm10'])
@@ -82,6 +82,7 @@ def main():
     url = get_url()
     data = get_data(url)
     save_results(data)
+
 
 ##############################################################################
 if __name__ == "__main__":
