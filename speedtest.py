@@ -15,7 +15,10 @@ PROM_FILE = os.path.join(PROM_DIR, "speedtest.prom")
 def run_speedtest() -> dict[str, Any]:
     """Run speedtest and return the json data"""
     cmd = ["speedtest", "-f", "json"]
-    data = subprocess.run(cmd, capture_output=True, check=True)
+    try:
+        data = subprocess.run(cmd, capture_output=True, check=True)
+    except subprocess.CalledProcessError as exc:
+        return {}
     return json.loads(data.stdout)
 
 
@@ -25,15 +28,17 @@ def save_result(outfh, helpstr: str, key: str, value: float, data_type="gauge"):
     key = f"speedtest_{key}"
     outfh.write(f"# HELP {key} {helpstr}\n")
     outfh.write(f"# TYPE {key} {data_type}\n")
-    outfh.write(f"{key} {int(value)}\n")
+    outfh.write(f"{key} {value}\n")
 
 
 ##############################################################################
 def save_results(data: dict[str, Any]) -> None:
     """Save all the results to a prom file"""
     with open(PROM_FILE, "w", encoding="utf-8") as outfh:
-        outfh.write(f"# {data['timestamp']}\n")
-        save_result(outfh, "Packetloss", "packetloss", data["packetLoss"])
+        outfh.write(f"# {data.get('timestamp', 'Unknown')}\n")
+        save_result(outfh, "Packetloss", "packetloss", data.get("packetLoss", 100))
+        if not data:
+            return
 
         d = data["upload"]
         save_result(outfh, "Upload latency", "upload_latency", d["latency"]["iqm"])
