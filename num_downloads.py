@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# */10 * * * * root /usr/local/bin/num_downloads.py
 """ Check if any downloads have arrived """
 
 import os
@@ -18,7 +19,7 @@ def check_dir() -> int:
 ##############################################################################
 def save_result(outfh, helpstr: str, key: str, value: float, data_type="gauge"):
     """Save a value to the {outfh} file"""
-    key = f"speedtest_{key}"
+    key = f"downloads_{key}"
     outfh.write(f"# HELP {key} {helpstr}\n")
     outfh.write(f"# TYPE {key} {data_type}\n")
     outfh.write(f"{key} {value}\n")
