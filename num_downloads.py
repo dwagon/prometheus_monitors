@@ -12,7 +12,7 @@ PROM_FILE = os.path.join(PROM_DIR, "downloads.prom")
 ##############################################################################
 def check_dir() -> int:
     """Number of entries"""
-    files = os.listdir("/downloads/complete")
+    files = [_ for _ in os.listdir("/downloads/complete") if not _.startswith(".")]
     return len(files)
 
 
